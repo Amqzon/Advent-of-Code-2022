@@ -31,7 +31,7 @@ with open("Tag7/aufgabe.txt","r") as datei:
                 path_dict[curren_path] = []
                 path_dict[curren_path].append(command)
 
-    print(path_dict)
+
 
 zahlen_wert = []
 filesystem = {}
@@ -55,22 +55,84 @@ for pfad in path_dict:
             datei = datei.split(" ")
             zahler += int(datei[0])
     if pfad == "/":
+        
+        filesystem["/"] = zahler
         continue
     else:
         pfad_kurz = pfad.split("/")
         pfad_fuer_filesystem = pfad_kurz[len(pfad_kurz)-1]
-        print(pfad_fuer_filesystem)
+
 
         filesystem[pfad_fuer_filesystem] = zahler
         zahlen_wert.append(zahler)
         zahler = 0
-print(filesystem)
-print(zahlen_wert)
-
-# alle zahlen die kleiner als 10.000 sind zusammen rechnen
-ergebnis = 0
-gesamt_kapazitaet = 70000000
 
 
-freierplatz = gesamt_kapazitaet - ergebnis
-print(freierplatz)
+
+
+path_dict2 = {}
+
+for pfad in neues_path_dict:
+    pfad_zum_sehen = pfad.split("/")
+    pfad_zum_sehen.pop(0)
+    pfad_zum_sehen.pop(0)
+    
+    #schauen wie groß der pfad ist und das dann ab speichern
+
+    try:
+        path_dict2[pfad] = filesystem[pfad_zum_sehen[-1]]
+    except IndexError:
+        continue
+
+print(path_dict2)
+
+#oberste pfade
+top_path = {}
+
+
+
+
+for pfad in neues_path_dict:
+    pfad_zum_sehen = pfad.split("/")
+    pfad_zum_sehen.pop(0)
+    pfad_zum_sehen.pop(0)
+    try:
+        top_path[pfad_zum_sehen[0]] = filesystem[pfad_zum_sehen[0]]
+    except IndexError:
+        # pfad muss root sein
+        pass
+
+root_pfad = filesystem["/"]
+
+# freier speicher
+insgesamte_speicher = 70000000
+mindestens_benoetigter_speicher = 30000000
+ziel = insgesamte_speicher - mindestens_benoetigter_speicher
+
+freier_speicher = insgesamte_speicher - root_pfad
+
+belegte_speicher = insgesamte_speicher - freier_speicher
+benoetigter_speicher = root_pfad - ziel
+
+
+
+
+# die einzelnen pfade wenn einer davon gelöscht wird
+
+moeglichkeiten = []
+zahler = 0
+for pfad in filesystem:
+    #print(pfad + " " + str(filesystem[pfad]))
+    danach_speicher = root_pfad - filesystem[pfad]
+    
+    if  filesystem[pfad] >=benoetigter_speicher:
+        print(pfad + " " + str(filesystem[pfad]))
+        moeglichkeiten.append(filesystem[pfad])
+    else:
+        continue
+
+
+moeglichkeiten.sort()
+print(moeglichkeiten)
+
+# Dieser code funktioniert manchmal 
